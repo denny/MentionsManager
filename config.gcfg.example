@@ -1,0 +1,25 @@
+[Auth]
+ConsumerKey       = aaaaaaaaaaaaaaaaaaaaaaaaa
+ConsumerSecret    = bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+AccessToken       = cccccccccccccccccccccccccccccccccccccccccccccccccc
+AccessTokenSecret = ddddddddddddddddddddddddddddddddddddddddddddd
+
+[Auth2]
+ConsumerKey       = eeeeeeeeeeeeeeeeeeeeeeeee
+ConsumerSecret    = ffffffffffffffffffffffffffffffffffffffffffffffffff
+AccessToken       = gggggggggggggggggggggggggggggggggggggggggggggggggg
+AccessTokenSecret = hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+
+[Settings]
+FriendsCount  = 500
+FollowerCount = 3000
+MentionsCount = 100
+
+[Email]
+Server       = smtp.example.com
+ServerPort   = 25
+AuthUsername = user@example.com
+AuthPassword = password
+FromAddress  = blockbot@example.com
+AdminAddress = user@example.com
+
