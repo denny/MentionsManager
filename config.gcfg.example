@@ -11,9 +11,9 @@ AccessToken       = gggggggggggggggggggggggggggggggggggggggggggggggggg
 AccessTokenSecret = hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
 
 [Settings]
-FriendsCount  = 500
-FollowerCount = 3000
-MentionsCount = 100
+FriendsCount  = 500		# Pick a number a bit higher than your total friend count
+FollowerCount = 3000	# Pick a number a bit higher than your total follower count
+MentionsCount = 100		# How many mentions do you get between runs?  Again, aim high
 
 [Email]
 Server       = smtp.example.com
