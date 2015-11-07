@@ -147,14 +147,14 @@ func checkTweet( tweet anaconda.Tweet, cfg *Config, api *anaconda.TwitterApi ) {
 		"(?i)Gitong":  "dennygitong",	// Denny Gitong - Indonesian comedian
 		// Denny's Diner
 		"(?i)^@Denny's$": "atdennys",
-		"(?i)@Denny's.+(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|smash)": "dennysdiner",
-		"(?i)(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|fam |smash).+@Denny's": "dennysdiner" }
+		"(?i)@Denny's.+(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|smash|IHOP)": "dennysdiner",
+		"(?i)(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|fam |smash|IHOP).+@Denny's": "dennysdiner" }
 	
 	for rule, ruleName := range textRules {
 		match, err := regexp.MatchString( rule, tweet.Text )
 		if err != nil { log.Fatalf( "Regexp failed: %s", err ) }
 		if match {
-			blockUser( tweet.User, ruleName, cfg, api )
+			blockUser( tweet, ruleName, cfg, api )
 //			emailNotification( tweet, ruleName, cfg )
 			return
 		}
@@ -174,7 +174,7 @@ func checkTweet( tweet anaconda.Tweet, cfg *Config, api *anaconda.TwitterApi ) {
 		match, err := regexp.MatchString( rule, location )
 		if err != nil { log.Fatalf( "Regexp failed: %s", err ) }
 		if match {
-			blockUser( tweet.User, ruleName, cfg, api )
+			blockUser( tweet, ruleName, cfg, api )
 //			emailNotification( tweet, ruleName, cfg )
 			return
 		}
@@ -183,9 +183,9 @@ func checkTweet( tweet anaconda.Tweet, cfg *Config, api *anaconda.TwitterApi ) {
 
 
 // Block a user, and tweet a notification of why they were blocked
-func blockUser( user anaconda.User, ruleName string, cfg *Config, api *anaconda.TwitterApi ) {
+func blockUser( tweet anaconda.Tweet, ruleName string, cfg *Config, api *anaconda.TwitterApi ) {
 	// Block the user from the main account
-	user, err1 := api.BlockUserId( user.Id, nil )
+	user, err1 := api.BlockUserId( tweet.User.Id, nil )
 	if err1 != nil { log.Fatalf( "Failed to block user: %s", err1 ) }
 	
 	// Let them know via the notification account
@@ -193,14 +193,17 @@ func blockUser( user anaconda.User, ruleName string, cfg *Config, api *anaconda.
 	anaconda.SetConsumerSecret( cfg.Auth2.ConsumerSecret )
 	api2 := anaconda.NewTwitterApi( cfg.Auth2.AccessToken, cfg.Auth2.AccessTokenSecret )
 	
-	tweet, err2 := api2.PostTweet( "@" + user.ScreenName + 
+	params := url.Values{}
+	params.Set( "InReplyToStatusID",    tweet.IdStr )
+	params.Set( "InReplyToStatusIdStr", tweet.IdStr )
+	
+	tweet2, err2 := api2.PostTweet( "@" + user.ScreenName + 
 		": Hi! You've been blocked by @Denny. Reason: "  + 
-		"http://denny.me/blockbot/reason.html#" + ruleName, 
-		nil )
+		"http://denny.me/blockbot/reason.html#" + ruleName, params )
 	if err2 != nil { log.Fatalf( "Failed to notify blocked user: %s", err2 ) }
 	
 	// Display tweet in terminal
-	fmt.Println( ">> " + tweet.Text )
+	fmt.Println( ">> " + tweet2.Text )
 	
 	// Restore API to main account auth settings
 	anaconda.SetConsumerKey( cfg.Auth.ConsumerKey )
