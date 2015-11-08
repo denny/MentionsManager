@@ -282,10 +282,9 @@ func SendMail(addr string, a Auth, from string, to []string, msg []byte) error {
 	if ok, _ := c.Extension("STARTTLS"); ok {
 // Modifications start here
 		//config := &tls.Config{ServerName: c.serverName}
-		host, _, _ := net.SplitHostPort(addr)
 		config := &tls.Config{
 			InsecureSkipVerify: true,
-			ServerName:         host,
+			ServerName:         c.serverName,
 		}
 // EndMod
 		if testHookStartTLS != nil {
