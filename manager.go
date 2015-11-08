@@ -157,7 +157,7 @@ func checkTweet( tweet anaconda.Tweet, cfg *Config, api *anaconda.TwitterApi ) {
 		if err != nil { log.Fatalf( "Regexp failed: %s", err ) }
 		if match {
 			blockUser( tweet, ruleName, cfg, api )
-//			emailNotification( tweet, ruleName, cfg )
+			emailNotification( tweet, ruleName, cfg )
 			return
 		}
 	}
@@ -177,7 +177,7 @@ func checkTweet( tweet anaconda.Tweet, cfg *Config, api *anaconda.TwitterApi ) {
 		if err != nil { log.Fatalf( "Regexp failed: %s", err ) }
 		if match {
 			blockUser( tweet, ruleName, cfg, api )
-//			emailNotification( tweet, ruleName, cfg )
+			emailNotification( tweet, ruleName, cfg )
 			return
 		}
 	}
