@@ -31,6 +31,8 @@ type Config struct {
 		FriendsCount      string
 		FollowerCount     string
 		MentionsCount     string
+		MyScreenName      string
+		ReasonsURL        string
 	}
 	Email struct {
 		Server            string
@@ -200,8 +202,8 @@ func blockUser( tweet anaconda.Tweet, ruleName string, cfg *Config, api *anacond
 	params.Set( "InReplyToStatusIdStr", tweet.IdStr )
 	
 	tweet2, err2 := api2.PostTweet( "@" + user.ScreenName + 
-		": Hi! You've been blocked by @Denny. Reason: "  + 
-		"http://denny.me/blockbot/reason.html#" + ruleName, params )
+		": Hi! You've been blocked by @" + cfg.Settings.MyScreenName  + 
+		". Reason: " + cfg.Settings.ReasonsURL + "#" + ruleName, params )
 	if err2 != nil { log.Fatalf( "Failed to notify blocked user: %s", err2 ) }
 	
 	// Display tweet in terminal
@@ -216,11 +218,17 @@ func blockUser( tweet anaconda.Tweet, ruleName string, cfg *Config, api *anacond
 // Send an email letting admin know that bot did something
 func emailNotification( tweet anaconda.Tweet, ruleName string, cfg *Config ) {
 	// Create the email body text
-	body := "From: " + cfg.Email.FromAddress + "\n" +
-			"To: " + cfg.Email.AdminAddress + "\n" +
+	body := "From: "    + cfg.Email.FromAddress  + "\n" +
+			"To: "      + cfg.Email.AdminAddress + "\n" +
+			"Subject: " + "[BlockBot] Blocked @" + tweet.User.ScreenName +
 			"\n" +
-			"Your block bot just blocked " + tweet.User.ScreenName + 
-			" for the following tweet: " + tweet.Text + "\n"
+			"Your block bot just blocked @" + tweet.User.ScreenName +
+			" for the following tweet: \n" +
+			tweet.Text + "\n" +
+			"\n" +
+			"User:  https://twitter.com/" + tweet.User.ScreenName + "\n" +
+			"Tweet: https://twitter.com/" + tweet.User.ScreenName +
+			"/status/" + tweet.IdStr + "\n"
 	// Display email in terminal too
 	fmt.Println( body )
 	
