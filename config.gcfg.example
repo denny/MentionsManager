@@ -14,8 +14,11 @@ AccessTokenSecret = hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
 FriendsCount  = 500		# Pick a number a bit higher than your total friend count
 FollowerCount = 3000	# Pick a number a bit higher than your total follower count
 MentionsCount = 100		# How many mentions do you get between runs?  Again, aim high
+MyScreenName  = YOUR_USERNAME_HERE
+ReasonsURL    = http://example.com/blockbot/reason.html
 
 [Email]
+SendEmails   = yes
 Server       = smtp.example.com
 ServerPort   = 25
 AuthUsername = user@example.com
