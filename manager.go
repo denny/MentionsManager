@@ -5,7 +5,8 @@ import (
 	"log"
 	"regexp"
 	"net/url"
-//	"net/smtp"	// TODO: Find a workaround for problem with self-signed TLS cert
+	
+	"./smtp-with-self-signed-cert"			// Standard lib can't support this *eye-roll*
 	
 	"gopkg.in/gcfg.v1"						// Config file parser
 	"github.com/ChimeraCoder/anaconda"		// Twitter API
@@ -42,7 +43,8 @@ type Config struct {
 }
 
 
-// Load config, connect to Twitter API, fetch and check mentions, block and notify users where necessary
+// Load config, connect to Twitter API, fetch and check mentions, 
+// block and notify users where necessary
 func main() {
 	// Get config from file
 	cfg := getConfig( "config.gcfg" )
@@ -148,7 +150,7 @@ func checkTweet( tweet anaconda.Tweet, cfg *Config, api *anaconda.TwitterApi ) {
 		// Denny's Diner
 		"(?i)^@Denny's$": "atdennys",
 		"(?i)@Denny's.+(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|smash|IHOP)": "dennysdiner",
-		"(?i)(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|fam |smash|IHOP).+@Denny's": "dennysdiner" }
+		"(?i)(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|fam |smash|IHOP|LIVE on #Periscope).+@Denny's": "dennysdiner" }
 	
 	for rule, ruleName := range textRules {
 		match, err := regexp.MatchString( rule, tweet.Text )
@@ -212,7 +214,6 @@ func blockUser( tweet anaconda.Tweet, ruleName string, cfg *Config, api *anacond
 
 
 // Send an email letting admin know that bot did something
-// TODO: Find a workaround for problem with self-signed TLS cert
 func emailNotification( tweet anaconda.Tweet, ruleName string, cfg *Config ) {
 	// Create the email body text
 	body := "From: " + cfg.Email.FromAddress + "\n" +
@@ -223,11 +224,6 @@ func emailNotification( tweet anaconda.Tweet, ruleName string, cfg *Config ) {
 	// Display email in terminal too
 	fmt.Println( body )
 	
-	// TODO: Need one of these two flags to exist?
-	// smtp.ServerInfo.AcceptSelfSignedCert = true
-	// smtp.ServerInfo.UseTLS = false
-	
-/*
 	// Set up authentication details
 	auth := smtp.PlainAuth(
 		"",
@@ -235,7 +231,6 @@ func emailNotification( tweet anaconda.Tweet, ruleName string, cfg *Config ) {
 		cfg.Email.AuthPassword,
 		cfg.Email.Server,
 	)
-	
 	
 	// Connect to SMTP server and send the email
 	err := smtp.SendMail(
@@ -246,6 +241,5 @@ func emailNotification( tweet anaconda.Tweet, ruleName string, cfg *Config ) {
 		[]byte( body ),
 	)
 	if err != nil { log.Fatal( err ) }
-*/
 }
 
