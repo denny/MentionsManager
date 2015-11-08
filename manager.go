@@ -35,6 +35,7 @@ type Config struct {
 		ReasonsURL        string
 	}
 	Email struct {
+		SendEmails        bool
 		Server            string
 		ServerPort        string
 		AuthUsername      string
@@ -159,7 +160,9 @@ func checkTweet( tweet anaconda.Tweet, cfg *Config, api *anaconda.TwitterApi ) {
 		if err != nil { log.Fatalf( "Regexp failed: %s", err ) }
 		if match {
 			blockUser( tweet, ruleName, cfg, api )
-			emailNotification( tweet, ruleName, cfg )
+			if cfg.Email.SendEmails {
+				emailNotification( tweet, ruleName, cfg )
+			}
 			return
 		}
 	}
@@ -179,7 +182,9 @@ func checkTweet( tweet anaconda.Tweet, cfg *Config, api *anaconda.TwitterApi ) {
 		if err != nil { log.Fatalf( "Regexp failed: %s", err ) }
 		if match {
 			blockUser( tweet, ruleName, cfg, api )
-			emailNotification( tweet, ruleName, cfg )
+			if cfg.Email.SendEmails {
+				emailNotification( tweet, ruleName, cfg )
+			}
 			return
 		}
 	}
@@ -197,6 +202,7 @@ func blockUser( tweet anaconda.Tweet, ruleName string, cfg *Config, api *anacond
 	anaconda.SetConsumerSecret( cfg.Auth2.ConsumerSecret )
 	api2 := anaconda.NewTwitterApi( cfg.Auth2.AccessToken, cfg.Auth2.AccessTokenSecret )
 	
+	// TODO: Make this work...
 	params := url.Values{}
 	params.Set( "InReplyToStatusID",    tweet.IdStr )
 	params.Set( "InReplyToStatusIdStr", tweet.IdStr )
