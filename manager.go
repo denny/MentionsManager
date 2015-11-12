@@ -70,7 +70,7 @@ func main() {
 		// Check to see if tweet was posted by a friend or follower
 		if ! friendsIds[ tweet.User.Id ] && ! followersIds[ tweet.User.Id ] {
 			// Check they don't have a username starting with your username
-			match, err := regexp.MatchString( cfg.Settings.MyScreenName, tweet.User.ScreenName )
+			match, err := regexp.MatchString( "(?i)^" + cfg.Settings.MyScreenName, tweet.User.ScreenName )
 			if err != nil { log.Fatalf( "Regexp failed: %s", err ) }
 			if match {
 				blockUser( tweet, "truncatedusername", cfg, api )
