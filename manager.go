@@ -67,9 +67,19 @@ func main() {
 	// Run through mentions checking against friend/follower lists and block criteria
 	for _ , tweet := range mentions {
 		fmt.Println( "<" + tweet.User.ScreenName + ">", tweet.Text )
-		// Check to see if tweet was posted by a friend
+		// Check to see if tweet was posted by a friend or follower
 		if ! friendsIds[ tweet.User.Id ] && ! followersIds[ tweet.User.Id ] {
-			// Not a friend or follower - check the tweet content against block rules
+			// Check they don't have a username starting with your username
+			match, err := regexp.MatchString( cfg.Settings.MyScreenName, tweet.User.ScreenName )
+			if err != nil { log.Fatalf( "Regexp failed: %s", err ) }
+			if match {
+				blockUser( tweet, "truncatedusername", cfg, api )
+				if cfg.Email.SendEmails {
+					emailNotification( tweet, "truncatedusername", cfg )
+				}
+				break
+			}
+			// Check the tweet content against block rules
 			checkTweet( tweet, cfg, api )
 		}
 	}
@@ -152,8 +162,8 @@ func checkTweet( tweet anaconda.Tweet, cfg *Config, api *anaconda.TwitterApi ) {
 		"(?i)Gitong":  "dennygitong",	// Denny Gitong - Indonesian comedian
 		// Denny's Diner
 		"(?i)^@Denny's$": "atdennys",
-		"(?i)@Denny's.+(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|smash|IHOP)": "dennysdiner",
-		"(?i)(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|fam |smash|IHOP|LIVE on #Periscope).+@Denny's": "dennysdiner" }
+		"(?i)@Denny's.+(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|smash|hungry|starving|IHOP)": "dennysdiner",
+		"(?i)(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|fam |smash|hungry|starving|IHOP|LIVE on #Periscope).+@Denny's": "dennysdiner" }
 	
 	for rule, ruleName := range textRules {
 		match, err := regexp.MatchString( rule, tweet.Text )
