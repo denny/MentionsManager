@@ -156,10 +156,11 @@ func checkTweet( tweet anaconda.Tweet, cfg *Config, api *anaconda.TwitterApi ) {
 	textRules := map[string]string { 
 		// Celebrities
 		"(?i)Hamlin":  "dennyhamlin",	// Denny Hamlin - NASCAR driver
-		"(?i)NASCAR":  "dennyhamlin",	// ""
-		"(?i)Cagur":   "dennycagur",	// Denny Cagur - Indonesian actor
+		"(?i)NASCAR":  "dennyhamlin",	// 
+		"(?i)Cagur":   "dennycagur",	// Denny Cagur   - Indonesian actor
 		"(?i)Sumargo": "dennysumargo",	// Denny Sumargo - Indonesian basketball player
-		"(?i)Gitong":  "dennygitong",	// Denny Gitong - Indonesian comedian
+		"(?i)Gitong":  "dennygitong",	// Denny Gitong  - Indonesian comedian
+		"(?i)Santoso": "dennysantoso",  // Denny Santoso - Indonesian entrepreneur
 		// Denny's Diner
 		"(?i)^@Denny's$": "atdennys",
 		"(?i)@Denny's.+(breakfast|lunch|dinner|food|coffee|milkshake|Grand Slam|diner|waitress|service|smash|hungry|starving|IHOP)": "dennysdiner",
