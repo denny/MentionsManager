@@ -23,5 +23,8 @@ _testmain.go
 *.test
 *.prof
 
+# Editor backup files
+*~
+
 # Actual config file, highly likely to contain private data
 config.gcfg
